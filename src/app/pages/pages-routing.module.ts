@@ -12,7 +12,7 @@ const routes: Routes = [
     children: [
       { path: '', component: DashboardComponent },
       { path: 'progress', component: ProgressComponent },
-      { path: 'garfica1', component: Grafica1Component },
+      { path: 'grafica1', component: Grafica1Component },
     ]
   },
 ];
