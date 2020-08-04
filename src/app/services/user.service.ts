@@ -8,7 +8,8 @@ import { environment } from '../../environments/environment';
 
 import { RegisterForm } from '../interfaces/register-form.interface';
 import { LoginForm } from '../interfaces/login-form.interface';
-import { resolve } from 'dns';
+import { User } from '../models/user.model';
+
 
 const base_url = environment.base_url;
 declare const gapi: any;
@@ -19,8 +20,16 @@ declare const gapi: any;
 export class UserService {
 
   public auth2: any;
+  public user: User;
 
   constructor( private http: HttpClient, private router: Router, private ngZon: NgZone ) { this.googleInit(); }
+
+  get token(): string {
+    return localStorage.getItem('token') || '';
+  }
+  get uid(): string {
+    return this.user.u_id || '';
+  }
 
   googleInit() {
     // tslint:disable-next-line: no-shadowed-variable
@@ -48,19 +57,17 @@ export class UserService {
   }
 
   validarToken(): Observable<boolean> {
-    const token = localStorage.getItem('token') || '';
-
     return this.http.get(`${base_url}/login/renew`, {
       headers: {
-        'x-token': token
+        'x-token': this.token
       }
     }).pipe(
-      tap( (resp: any) => {
-        // localStorage.setItem('token', resp.token);
-        const tokenPrueba = token;
-        localStorage.setItem('token', tokenPrueba);
+      map( (resp: any) => {
+        const { email, google, img, name, role, u_id, } = resp.user;
+        this.user = new User(name, email, '', img, google, role, u_id);
+        localStorage.setItem('token', resp.newtoken);
+        return true;
       }),
-      map( resp => true),
       catchError( error => of(false))
     );
   }
@@ -69,9 +76,21 @@ export class UserService {
     return this.http.post(`${base_url}/user`, formData).pipe(
       tap( (resp: any) => {
         localStorage.setItem('token', resp.token);
-        console.log(resp);
+        // console.log(resp);
       })
     );
+  }
+
+  updateUser( data: { name: string, email: string, role: string } ) {
+    data = {
+      ...data,
+      role: this.user.role
+    }
+    return this.http.put(`${base_url}/user/${ this.uid }`, data, {
+      headers: {
+        'x-token': this.token
+      }
+  });
   }
 
 
@@ -79,7 +98,7 @@ export class UserService {
     return this.http.post(`${base_url}/login`, formData).pipe(
       tap( (resp: any) => {
         localStorage.setItem('token', resp.token);
-        console.log(resp);
+        // console.log(resp);
       })
     );
   }
@@ -88,7 +107,7 @@ export class UserService {
     return this.http.post(`${base_url}/login/google`, { token }).pipe(
       tap( (resp: any) => {
         localStorage.setItem('token', resp.token);
-        console.log(resp);
+        // console.log(resp);
       })
     );
   }

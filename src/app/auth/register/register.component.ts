@@ -33,7 +33,7 @@ export class RegisterComponent implements OnInit {
 
   createUser() {
     this.formSubmitted = true;
-    console.log(this.registerForm.value);
+    // console.log(this.registerForm.value);
 
     if (this.registerForm.invalid) {
       return;
