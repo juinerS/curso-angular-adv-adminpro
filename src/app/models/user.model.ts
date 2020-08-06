@@ -15,15 +15,11 @@ export class User {
     get imagenUrl(){
         // /upload/users/dflsñ
 
-        if ( this.img === undefined ) {
+        if ( !this.img ) {
             return `${base_url}/upload/users/no-image`;
-        }
-
-        if ( this.img.includes('https') ) {
+        } else if ( this.img.includes('https') ) {
             return this.img;
-        }
-
-        if ( this.img ) {
+        } else if ( this.img ) {
             return `${base_url}/upload/users/${this.img}`;
         } else {
             return this.img =`${base_url}/upload/users/no-image`;

@@ -8,6 +8,8 @@ const base_url = environment.base_url;
 })
 export class FileUploadService {
 
+  public imgNoPertida: boolean = false;
+
   constructor() { }
 
   async actualizarFoto( archivo: File, tipo: 'users'|'medicos'|'hospitals', id: string ) {
@@ -27,10 +29,11 @@ export class FileUploadService {
 
       const data = await resp.json();
       if ( data.ok ) {
+        this.imgNoPertida = true;
         return data.nombreArchivo;
       } else {
         console.log(data.msg);
-        return false;
+        return this.imgNoPertida;
       }
 
       // console.log(data);

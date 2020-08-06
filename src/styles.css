@@ -14,3 +14,30 @@
     height: 200px;
     width: 200px;
 }
+
+.w100 {
+    width: 100px;
+}
+
+.w130 {
+    width: 130px;
+}
+
+.avatar {
+    width: 50px;
+    border-radius: 100%;
+}
+
+.oculto {
+    display: none;
+}
+
+.fondo-modal-imagen {
+    background-color: rgba(0, 0, 0, 0.4);
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+}
